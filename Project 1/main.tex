@@ -1,0 +1,290 @@
+ \documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{accents}
+\usepackage{graphicx}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
+\newcommand{\EE}{\dot{E}}
+\newcommand{\dqdx}{\frac{\partial q_x}{\partial x}}
+\newcommand{\dqdy}{\frac{\partial q_y}{\partial y}}
+\newcommand{\dTdt}{\frac{\partial T_2}{\partial t}}
+\newcommand{\dTdx}{\frac{\partial^2 T_2}{\partial x^2}}
+\newcommand{\dTTdt}{\frac{\partial T_3}{\partial t}}
+\newcommand{\dTTdx}{\frac{\partial^2 T_3}{\partial x^2}}
+\newcommand{\dTTdy}{\frac{\partial^2 T_3}{\partial y^2}}
+\newcommand{\dy}{\text{d}y}
+
+\title{\textbf{ME 511 Project 1}}
+
+\author{\textbf{One Team}: \\ Obed Acevedo, Geoff Germino, Ramsey Ibrahim, Ryan Kelly, \\ Alex Pawlowski, Preetam Sharma, John Thress}
+
+\date{October 1, 2019}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Introducing the Problem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{The System} 
+Consider Figure 1 below which displays three (3) distinct control volumes: (1) spatially lumped, $T_1(t)$; (2) partially lumped, $T_2(x,t)$; and distributed, $T_3(x,y,t)$. Assume constant thermophysical properties ($k,\rho,c$).
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width = 0.75\textwidth]{"Total CV".PNG} 
+    \caption{Two-dimensional rectangular region with indicated boundary conditions showing three (3) distinct control volumes.}
+    \label{fig:figure1}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Part 1}
+For each CV (1-3), derive the appropriate heat equation in temperature. Let a unit depth be assumed in the $z$-direction. Make sure that your temperature is written with the proper subscript. Also, show the correct boundary and initial conditions as needed for each formulation. Simplify each equation when possible. Prepare your results in three completed formulations (PDE or ODE with appropriate auxiliary conditions.)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Part 2}
+Starting from the CV 3 formulation, show how CV 2 can be recovered. What is the relationship between $T_3(x,y,t)$ and $T_2(x,t)$?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Part 1 Analysis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{CV 1}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width = 0.75\textwidth]{"CV 1".PNG}
+    \caption{Control Volume 1, isolated}
+    \label{fig:figure 2}
+\end{figure}
+
+Since CV 1 is spatially lumped, the only variation in temperature should happen in time (i.e., $T_1 = T_1(t)$). Therefore, the governing differential equation of temperature change should be an ordinary differential equation with a single initial condition. Starting with the energy balance:
+
+\begin{equation}
+    \EE_{in} - \EE_{out} + \EE_{gen} = \EE_{stored}
+    \label{ebal}
+\end{equation}
+
+\begin{equation}
+    \Rightarrow q_{in} - q_{out} + q_{gen} = \rho c V \frac{dT_1}{dt}.
+    \label{qbal}
+\end{equation}
+where $q$ is a heat transfer rate, $\rho$ is the density of the material, $c$ is the specific heat capacity of the material, and $V$ is the volume. Notice that $q_{in}$ is entirely comprised of the convection at the boundaries since the system is spatially lumped, and $q_{out} = 0$ because of the condition $T_\infty > T_0$. With adiabatic conditions along the left and bottom sides, convection heat transfer only happens across the top and right surfaces, so the energy balance becomes
+
+\begin{equation}
+    hA_{top}(T_\infty - T_1) + hA_{right}(T_\infty - T_1) + uV = \rho c V \frac{dT_1}{dt},
+\end{equation}
+which is equivalent to
+\begin{equation}
+    ha(T_\infty - T_1) + hb(T_\infty - T_1) + uab = \rho c ab \frac{dT_1}{dt}
+\end{equation}
+where $h$ is the convection coefficient, and $u$ is the heat generation rate per unit volume. After isolating the derivative, the final form of the equation becomes
+\begin{equation}
+    \frac{dT_1}{dt} = \frac{h(a+b)}{\rho c ab} (T_\infty - T_1) + \frac{u}{\rho c}
+\end{equation}
+with the initial condition of $T_1(0) = T_0$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{CV 2}
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width = 0.25\textwidth]{"CV 2".PNG}
+    \caption{Control Volume 2, isolated}
+    \label{fig:CV 2}
+\end{figure}
+
+For the partially lumped system, temperature is now a function of time and one-dimensional space (i.e., $T_2 = T_2(x,t)$), so the governing differential equation will now be a partial differential equation (PDE). There is now convection heat transfer along the top of the control volume and conduction through the sides, so the energy balance in Eq. \eqref{qbal} takes a different form:
+
+\begin{equation}
+    hA_{top}(T_\infty - T_2) + q_x - q_{x+dx} + q_{gen} = \rho c V \dTdt. 
+    \label{qCV2}
+\end{equation}
+First, note that $q_{x+dx}$ can be expanded through Taylor series in the form of 
+
+\begin{equation}
+    q_{x+dx} = q_x + \dqdx dx + H.O.T.
+    \label{qxdx}
+\end{equation}
+where $H.O.T.$ represents all higher order terms. Then, using Fourier's Law:
+\begin{equation}
+    q_x = -kA\frac{\partial T}{\partial x}
+\end{equation}
+and rewriting the areas and volumes in terms of the given dimensions, Eq. \eqref{qCV2} becomes
+
+\begin{equation}
+    h(T_\infty - T_2)dx + kb\dTdx dx + ubdx = \rho c b dx \dTdt 
+\end{equation}
+where $k$ is the thermal conductivity coefficient. After some rearrangement, the final PDE becomes
+
+\begin{equation}
+    \dTdx - \frac{1}{\alpha} \dTdt = -\bigg(\frac{u}{k} + \frac{h}{b}(T_\infty - T_2)\bigg)
+    \label{T2}
+\end{equation}
+where $\alpha \equiv \frac{\rho c}{k}$, with the following auxiliary conditions:
+
+\begin{equation}
+    \begin{cases}
+    T_2(x,0) = T_0 \\
+    \\
+    \frac{\partial T_2(0,t)}{\partial x} = 0, \, \, \frac{\partial T_2(a,t)}{\partial x} = -\frac{h}{k}(T_\infty - T_2(a,t))
+    \end{cases}
+\end{equation}
+These boundary conditions can be derived from a surface energy balance and equating the incoming and outgoing heat fluxes at the left and right surfaces.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{CV 3}
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width = 0.25\textwidth]{"CV 3".PNG}
+    \caption{Control Volume 3, isolated}
+    \label{fig:CV 3}
+\end{figure}
+
+With the distributed control volume, temperature is a function of two spatial dimensions and time (i.e., $T_3 = T_3(x,y,t)$). This time, there is only conduction heat transfer through each side of the control, so one can reduce Eq. \eqref{qbal} to obtain the following:
+
+\begin{equation}
+    q_x + q_y - q_{x+dx} - q_{y+dy} + uV = \rho c V \dTTdt.
+\end{equation}
+Taking the same definitions of variables as before and using Eq. \eqref{qxdx} for both $q_{x+dx}$ and $q_{y+dy}$, the PDE becomes
+
+\begin{equation}
+    k \nabla^2 T_3 dx dy + u dx dy = \rho c dx dy \dTTdt
+    \label{T3}
+\end{equation}
+where $\nabla^2$ is the Laplacian operator, so 
+\begin{equation}
+    \nabla^2 T_3 = \dTTdx + \dTTdy.
+\end{equation}
+Eq. \eqref{T3} then reduces to the form
+\begin{equation}
+    \nabla^2 T_3 - \frac{1}{\alpha} \dTTdt = -\frac{u}{k}
+\end{equation}
+subject to the following auxiliary conditions (derived identically to CV 2):
+
+\begin{equation}
+    \begin{cases}
+    T_3(x,y,0) = T_0 \\
+    \\
+    \frac{\partial T_3(0,y,t)}{\partial x} = 0, \, \, \frac{\partial T_3(a,y,t)}{\partial x} = -\frac{h}{k}(T_\infty - T_3(a,y,t)) \\
+    \\
+    \frac{\partial T_3(x,0,t)}{\partial y} = 0, \, \, \frac{\partial T_3(x,b,t)}{\partial y} = -\frac{h}{k}(T_\infty - T_3(x,b,t))
+    \end{cases}
+    \label{BC3}
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Part 2 Analysis}
+Starting with CV 3, the control volume is extended in the $y$-direction such that it reaches the adiabatic boundary condition at the bottom and the convection region at the top. The PDE derived for CV 3 can be reduced in the $y$-direction through integration, as the new CV loses a differential element in the y direction:
+
+\begin{equation}
+    \int_0^b \bigg( \dTTdx + \dTTdy - \frac{1}{\alpha} \dTTdt \bigg) \text{d}y = -\int_0^b \frac{u}{k} \text{d} y.
+    \label{intT3}
+\end{equation}
+Using the linearity of integration and pulling out the appropriate derivatives, Eq. \eqref{intT3} can be separated into the following form:
+
+\begin{equation}
+    \frac{\partial^2}{\partial x^2} \int_0^b T_3 \dy + \int_0^b \dTTdy \dy - \frac{1}{\alpha} \frac{\partial}{\partial t} \int_0^b T_3 \dy = -\frac{ub}{k}.
+    \label{sepint}
+\end{equation}
+Notice that the second integral can be evaluated as
+
+\begin{equation}
+    \int_0^b \dTTdy \dy = \bigg[ \frac{\partial T_3}{\partial y} \bigg]_0^b = \frac{\partial T_3(x,b,t)}{\partial y} - \frac{\partial T_3(x,0,t)}{\partial y}.
+\end{equation}
+Using the boundary conditions in Eq. \eqref{BC3}, one can see that
+\begin{equation}
+    \int_0^b \dTTdy \dy = -\frac{h}{k}(T_\infty - T_3(x,b,t)).
+    \label{bceval}
+\end{equation}
+Plugging Eq. \eqref{bceval} into Eq. \eqref{sepint}, and dividing through by $b$, one gets
+
+\begin{equation}
+    \frac{\partial^2}{\partial x^2} \frac{1}{b}\int_0^b T_3 \dy - \frac{1}{\alpha} \frac{\partial}{\partial t} \frac{1}{b}\int_0^b T_3 \dy = -\bigg(\frac{u}{k} + \frac{h}{k}(T_\infty - T_3(x,b,t))\bigg).
+\end{equation}
+The average temperature of the distributed temperature in the $y$-direction is defined as
+\begin{equation}
+    \overline{T}_3 = \frac{1}{b} \int_0^b T_3 \dy,
+\end{equation}
+and since there is an assumption of uniform temperature along the $y$-direction, $\overline{T}_3 = \overline{T}_3(x,t)$; therefore, $T_3(x,b,t)=\overline{T}_3(x,t)$. Thus the PDE becomes
+
+\begin{equation}
+    \frac{\partial^2 \overline{T}_3}{\partial x^2} - \frac{1}{\alpha} \frac{\partial \overline{T}_3}{\partial t} = -\bigg(\frac{u}{k} + \frac{h}{k}(T_\infty - \overline{T}_3)\bigg).
+    \label{meanT3}
+\end{equation}
+Comparing Eq. \eqref{meanT3} to Eq. \eqref{T2}, one can deduce that 
+\begin{equation}
+    T_2 = \overline{T}_3,
+\end{equation}
+or $T_2$ is simply the average of $T_3$ over the $y$-direction of the region.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Conclusion}
+\subsection*{Part 1}
+The following heat equations for each Control Volume (1-3) were derived with their corresponding boundary and initial conditions:
+\subsection*{CV 1}
+\begin{equation}
+    \frac{dT_1}{dt} = \frac{h(a+b)}{\rho c ab} (T_\infty - T_1) + \frac{u}{\rho c}
+\end{equation}
+With the initial condition $T_1(0) = T_0$.
+\subsection*{CV 2}
+\begin{equation}
+    \dTdx - \frac{1}{\alpha} \dTdt = -\bigg(\frac{u}{k} + \frac{h}{b}(T_\infty - T_2)\bigg)
+    \label{T2}
+\end{equation}
+Where $\alpha \equiv \frac{\rho c}{k}$, with the following auxiliary conditions:
+
+\begin{equation}
+    \begin{cases}
+    T_2(x,0) = T_0 \\
+    \\
+    \frac{\partial T_2(0,t)}{\partial x} = 0, \, \, \frac{\partial T_2(a,t)}{\partial x} = -\frac{h}{k}(T_\infty - T_2(a,t))
+    \end{cases}
+\end{equation}
+\subsection*{CV 3}
+\begin{equation}
+    \nabla^2 T_3 - \frac{1}{\alpha} \dTTdt = -\frac{u}{k}
+\end{equation}
+Where $\nabla^2$ is the Laplacian operator, so that
+\begin{equation}
+    \nabla^2 T_3 = \dTTdx + \dTTdy.
+\end{equation}
+With the following auxiliary conditions:
+
+\begin{equation}
+    \begin{cases}
+    T_3(x,y,0) = T_0 \\
+    \\
+    \frac{\partial T_3(0,y,t)}{\partial x} = 0, \, \, \frac{\partial T_3(a,y,t)}{\partial x} = -\frac{h}{k}(T_\infty - T_3(a,y,t)) \\
+    \\
+    \frac{\partial T_3(x,0,t)}{\partial y} = 0, \, \, \frac{\partial T_3(x,b,t)}{\partial y} = -\frac{h}{k}(T_\infty - T_3(x,b,t))
+    \end{cases}
+    \label{BC3}
+\end{equation}
+
+\subsection*{Part 2}
+Through means of integration, it is determined that the heat equation for CV3 can be reduced in the $y$-direction so that the heat equation for CV2 can be recovered.\\ \\Via integration over the bounds $y=0 \rightarrow y=b$, the heat equation for CV3 reduces to:
+\begin{equation}
+    \frac{\partial^2 \overline{T}_3}{\partial x^2} - \frac{1}{\alpha} \frac{\partial \overline{T}_3}{\partial t} = -\bigg(\frac{u}{k} + \frac{h}{k}(T_\infty - \overline{T}_3)\bigg).
+    \label{meanT3}
+\end{equation}
+Matching the heat equation for CV2:
+\begin{equation}
+    \dTdx - \frac{1}{\alpha} \dTdt = -\bigg(\frac{u}{k} + \frac{h}{b}(T_\infty - T_2)\bigg)
+    \label{T2}
+\end{equation}
+It is determined that the partially lumped system temperature $T_2$ is equal to the average temperature $\overline{T_3}$ in the $y$-direction of the region.
+\begin{equation}
+    T_2 = \overline{T}_3
+\end{equation}
+\end{document}
